@@ -78,9 +78,9 @@ $$x_{\text{norm}} = \text{arcsinh}\left(\frac{x_{\text{SNR}}}{\beta}\right), \qq
 The transform behaves differently in two regimes:
 
 $$
-\operatorname{arcsinh}(u) \approx \begin{cases} 
+\text{arcsinh}(u) \approx \begin{cases} 
 u, & |u| \ll 1 \quad \text{(linear: noise preserved)}, \\ 
-\operatorname{sgn}(u) \ln(2|u|), & |u| \gg 1 \quad \text{(logarithmic: bright flux compressed)}.
+\text{sgn}(u) \ln(2|u|), & |u| \gg 1 \quad \text{(logarithmic: bright flux compressed)}.
 \end{cases}
 }$$
 
@@ -115,7 +115,7 @@ These operations only permute pixels of the $21\times21$ grid. There is no inter
 
 Every element of $D_4$ can be written uniquely as
 
-$$g = s^m \circ r^k, \qquad k \in \{0, 1, 2, 3\}, \quad m \in \{0, 1\}$$
+$$g = s^m \circ r^k, \qquad k \in \\{0, 1, 2, 3\\}, \quad m \in \\{0, 1\\}$$
 
 so the augmentation only needs to draw the two exponents:
 
