@@ -6,8 +6,8 @@ _Classifying asteroids below the detection limit of a single image: filtering KB
 
 **Authors:**
 
-- ((@jurados))[https://github.com/jurados] **Steve Jurado** (_Main Contributor_), Universidad de Chile, Chile.
-- ((@Renato-98))[https://github.com/Renato-98] **Renato Pino**, Universidad de Chile, Chile.
+- [(@jurados)](https://github.com/jurados) **Steve Jurado** (_Main Contributor_), Universidad de Chile, Chile.
+- [(@Renato-98)](https://github.com/Renato-98) **Renato Pino**, Universidad de Chile, Chile.
 - **Korinna Bayer**
 
 **Advisor:** Prof. **Andrew Connolly**, University of Washington, USA.
