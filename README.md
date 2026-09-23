@@ -120,7 +120,7 @@ $$g = s^m \circ r^k, \qquad k \in \\{0, 1, 2, 3\\}, \quad m \in \\{0, 1\\}$$
 so the augmentation only needs to draw the two exponents:
 
 1. **Rotation:** draw $k \sim \mathcal{U}\\{0,1,2,3\\}$ and rotate by $k \times 90^\circ$ (`torch.rot90`), which applies $r^k$.
-2. **Reflection:** draw $m \sim \mathcal{U}\\{0,1}\\}$. If $m = 1$, apply a horizontal flip (`TF.hflip`), which applies $s$.
+2. **Reflection:** draw $m \sim \mathcal{U}\\{0,1\\}$. If $m = 1$, apply a horizontal flip (`TF.hflip`), which applies $s$.
 
 Since $k$ and $m$ are independent and uniform, each of the $4 \times 2 = 8$ elements of $D_4$ is sampled with **equal probability** $1/8$. There is no need for a separate vertical flip or diagonal reflections: they are already the compositions $sr^2$, $sr$ and $sr^3$. Augmentation is active only during training (`self.training`) and is turned off for validation and test. Passing `fix_k` and `fix_m` applies a specific element $g = s^{m} r^{k}$, e.g. to visualise the 8 transformations of a stamp.
 
@@ -183,16 +183,12 @@ Metrics on the full test set (34,220 stamps: 18,430 TP and 15,790 FP), computed 
 | Basic CNN               |     0.965 |     0.953 |     0.984 |     0.968 |     0.056 |
 | ResNet-56               |     0.954 | **1.000** |     0.914 |     0.955 | **0.000** |
 | ResNet-50 (frozen)      |     0.721 |     0.667 |     0.962 |     0.788 |     0.561 |
-| Complex CNN<sup>†</sup> | **0.982** |     0.982 | **0.985** | **0.984** |     0.021 |
-
-<sup>†</sup> A complementary baseline with 3 convolutional layers, batch normalization, max pooling, two fully connected layers and dropout.
 
 | Model              |     TN |    FP |    FN |     TP |
 | ------------------ | -----: | ----: | ----: | -----: |
 | Basic CNN          | 14,903 |   887 |   305 | 18,125 |
 | ResNet-56          | 15,790 |     0 | 1,577 | 16,853 |
 | ResNet-50 (frozen) |  6,925 | 8,865 |   701 | 17,729 |
-| Complex CNN        | 15,454 |   336 |   275 | 18,155 |
 
 <center>
 <!-- TODO: add loss / accuracy / recall curves -->
