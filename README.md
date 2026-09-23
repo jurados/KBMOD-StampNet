@@ -78,8 +78,8 @@ $$x_{\text{norm}} = \text{arcsinh}\left(\frac{x_{\text{SNR}}}{\beta}\right), \qq
 The transform behaves differently in two regimes:
 
 $$
-\text{arcsinh}(u) \approx \begin{cases} 
-u, & |u| \ll 1 \quad \text{(linear: noise preserved)}, \\ 
+\text{arcsinh}(u) \approx \begin{cases}
+u, & |u| \ll 1 \quad \text{(linear: noise preserved)}, \\
 \text{sgn}(u) \ln(2|u|), & |u| \gg 1 \quad \text{(logarithmic: bright flux compressed)}.
 \end{cases}
 $$
@@ -176,41 +176,52 @@ To adapt it to our data:
 
 ## Results
 
-Metrics on the full test set (34,220 stamps: 18,430 TP and 15,790 FP), computed from the confusion matrices. Precision, recall and F1 are for the **true-positive** class. The false-positive rate (FPR) is the fraction of junk classified as a real asteroid.
+All metrics are computed from the confusion matrices on the full test set (34,220 stamps: 18,430 TP and 15,790 FP). Precision, recall and F1 are for the **true-positive** (real asteroid) class. The false-positive rate (FPR) is the fraction of junk classified as a real asteroid, and the false-negative rate (FNR) is the fraction of real asteroids that are missed.
 
-| Model                   |  Accuracy | Precision |    Recall |        F1 |       FPR |
-| ----------------------- | --------: | --------: | --------: | --------: | --------: |
-| Basic CNN               |     0.965 |     0.953 |     0.984 |     0.968 |     0.056 |
-| ResNet-56               |     0.954 | **1.000** |     0.914 |     0.955 | **0.000** |
-| ResNet-50 (frozen)      |     0.721 |     0.667 |     0.962 |     0.788 |     0.561 |
+| Model              |  Accuracy | Precision |    Recall |        F1 |       FPR |       FNR |
+| ------------------ | --------: | --------: | --------: | --------: | --------: | --------: |
+| Basic CNN          |     0.987 |     0.994 |     0.982 |     0.988 |     0.007 |     0.018 |
+| **ResNet-56**      | **0.998** | **0.999** | **0.997** | **0.998** | **0.001** | **0.003** |
+| ResNet-50 (frozen) |     0.954 |     0.951 |     0.963 |     0.957 |     0.058 |     0.037 |
 
-| Model              |     TN |    FP |    FN |     TP |
-| ------------------ | -----: | ----: | ----: | -----: |
-| Basic CNN          | 14,903 |   887 |   305 | 18,125 |
-| ResNet-56          | 15,790 |     0 | 1,577 | 16,853 |
-| ResNet-50 (frozen) |  6,925 | 8,865 |   701 | 17,729 |
+| Model              |     TN |  FP |  FN |     TP |
+| ------------------ | -----: | --: | --: | -----: |
+| Basic CNN          | 15,684 | 106 | 328 | 18,102 |
+| **ResNet-56**      | 15,768 |  22 |  59 | 18,371 |
+| ResNet-50 (frozen) | 14,873 | 917 | 675 | 17,755 |
 
-<center>
-<!-- TODO: add loss / accuracy / recall curves -->
-<img src="figures/learning_curves.png" height="400px" />
-</center>
+**ResNet-56 is the best model on every metric.** It misclassifies only 81 of the 34,220 test stamps (22 false alarms and 59 missed asteroids). The Basic CNN makes 434 errors, and the frozen ResNet-50 makes 1,592.
 
-<center>
-<!-- TODO: add confusion matrices -->
-<img src="figures/confusion_matrix_basic.png" height="300px" />
-<img src="figures/confusion_matrix_resnet56.png" height="300px" />
-<img src="figures/confusion_matrix_resnet50.png" height="300px" />
-</center>
+![](assets/figs/metrics.png)
+
+### Confusion matrices
+
+<p align="center">
+  <img src="assets/figs/confusion_matrix_basic.png" width="32%" />
+  <img src="assets/figs/confusion_matrix_resnet56.png" width="32%" />
+  <img src="assets/figs/confusion_matrix_resnet50.png" width="32%" />
+</p>
+
+### Example predictions (ResNet-56)
+
+Random test stamps with the predicted class, the true class and the model confidence. Green titles are correct predictions and red titles are errors.
+
+![](assets/figs/test_predictions_resnet56.png)
 
 ## Conclusions
 
-- The **robust SNR + `arcsinh` normalization** gives the networks bounded, well-behaved inputs. Even the ~42k-parameter Basic CNN reaches about 96.5% test accuracy.
-- **ResNet-56**, trained from scratch, is the most conservative classifier: it produces **zero false positives** on the test set, at the cost of missing about 8.6% of the real objects. This is attractive when follow-up time is expensive.
-- **ResNet-50 with a frozen ImageNet backbone** transfers poorly. It labels 56% of the junk as real, which suggests that natural-image features do not match $21\times21$ noise-dominated astronomical stamps. It would need fine-tuning.
+- **ResNet-56, trained from scratch, is the best classifier.** It reaches 99.8% accuracy and F1. It lets through only 0.14% of the false positives (22 of 15,790) and misses only 0.32% of the real asteroids (59 of 18,430). Its depth and residual connections learn the subtle features of faint, noise-dominated sources without overfitting.
+- The **robust SNR + `arcsinh` normalization** gives the networks bounded, well-behaved inputs. Even the ~42k-parameter Basic CNN reaches 98.7% accuracy, with a very low FPR (0.7%). It is a cheap and strong baseline, but it misses about 5.5 times more real asteroids than ResNet-56 (328 vs. 59).
+- **ResNet-50 (frozen) is the weakest model**, for two reasons:
+  1. **Domain mismatch:** its backbone was pre-trained on ImageNet, a dataset of everyday RGB photographs that has nothing to do with $21\times21$ single-channel, noise-dominated coadds of faint asteroids. The features it learned (edges, textures and shapes of natural objects) do not describe PSF-like point sources on a sky background.
+  2. **Only a few layers are trained:** the backbone is frozen, so only the new input convolution and the 2-class head are learned (7,234 of 23.5M parameters). The network cannot adapt its internal representations to our data, unlike the models trained from scratch.
+
+  As a result, it has about 42 times more false positives than ResNet-56 (917 vs. 22). Fine-tuning the whole network, or at least its last stages, would be needed to make transfer learning competitive.
 - When the 8 $D_4$ transformations were precomputed (1.9M images), the training and validation curves showed possible **overfitting**. Together with the cost of the precomputed dataset, this motivated the on-the-fly GPU augmentation.
 
 ## Future Work
 
+- Fine-tune ResNet-50 end to end (or unfreeze its last stages) to test whether ImageNet pre-training helps once the backbone can adapt to astronomical stamps.
 - Add astronomical context (e.g., trajectory velocity, magnitude) as extra features.
 - Apply interpretability methods (e.g., SHAP) to understand what the networks learn.
 
