@@ -77,7 +77,7 @@ $$x_{\text{norm}} = \text{arcsinh}\left(\frac{x_{\text{SNR}}}{\beta}\right), \qq
 
 The transform behaves differently in two regimes:
 
-$$\text{arcsinh}(u) \approx \begin{cases} u, & |u| \ll 1 \quad \text{(linear: noise preserved)} \\ \text{sign}(u)\,\ln(2|u|), & |u| \gg 1 \quad \text{(logarithmic: bright flux compressed)} \end{cases}$$
+$$\text{arcsinh}(u) \approx \begin{cases} u & |u| \ll 1 \quad \text{(linear: noise preserved)} \\ \text{sign}(u)\ln(2|u|) & |u| \gg 1 \quad \text{(logarithmic: bright flux compressed)} \end{cases}$$
 
 It keeps the faint wings and noise structure linear, which is where faint KBOs sit. It compresses bright sources logarithmically without hard clipping, and unlike $\log x$ it handles negative values from background subtraction. The result is bounded, well-behaved inputs for gradient-based optimisation.
 
@@ -93,7 +93,7 @@ Deep-HiTS (Cabrera-Vives et al., 2017) made its transient classifier rotation-in
 
 A moving object's stamp has no preferred orientation on the sky. An object moving "up-left" should get the same label as one moving "down-right". The classifier should therefore be **invariant to the symmetries of the square pixel grid**, and these form the **dihedral group $D_4$** of order 8:
 
-$$D_4 = \langle\, r, s \mid r^4 = s^2 = e,\; srs = r^{-1} \,\rangle = \{\, e,\ r,\ r^2,\ r^3,\ s,\ sr,\ sr^2,\ sr^3 \,\}$$
+$$D_4 = \langle\, r, s \mid r^4 = s^2 = e,\; sr = r^{-1}s \,\rangle = \{\, e,\ r,\ r^2,\ r^3,\ s,\ sr,\ sr^2,\ sr^3 \,\}$$
 
 where $r$ is a $90^\circ$ rotation about the stamp centre and $s$ is a reflection (flip). The eight elements are:
 
