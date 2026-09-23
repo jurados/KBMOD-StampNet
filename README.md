@@ -93,7 +93,7 @@ Deep-HiTS (Cabrera-Vives et al., 2017) made its transient classifier rotation-in
 
 A moving object's stamp has no preferred orientation on the sky. An object moving "up-left" should get the same label as one moving "down-right". The classifier should therefore be **invariant to the symmetries of the square pixel grid**, and these form the **dihedral group $D_4$** of order 8:
 
-$$D_4 = \langle\, r, s \mid r^4 = s^2 = e,\; sr = r^{-1}s \,\rangle = \{\, e,\ r,\ r^2,\ r^3,\ s,\ sr,\ sr^2,\ sr^3 \,\}$$
+$$D_4 = \langle r, s \mid r^4 = s^2 = 1, \; sr = r^{-1}s \rangle = \{1, r, r^2, r^3, s, sr, sr^2, sr^3\}$$
 
 where $r$ is a $90^\circ$ rotation about the stamp centre and $s$ is a reflection (flip). The eight elements are:
 
