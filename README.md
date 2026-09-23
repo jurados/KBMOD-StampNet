@@ -6,8 +6,8 @@ _Classifying asteroids below the detection limit of a single image: filtering KB
 
 **Authors:**
 
-- (@jurados) **Steve Jurado** (_Main Contributor_), Universidad de Chile, Chile.
-- (@Renato-98) **Renato Pino**, Universidad de Chile, Chile.
+- [(@jurados)](https://github.com/jurados) **Steve Jurado** (_Main Contributor_), Universidad de Chile, Chile.
+- [(@Renato-98)](https://github.com/Renato-98) **Renato Pino**, Universidad de Chile, Chile.
 - **Korinna Bayer**
 
 **Advisor:** Prof. **Andrew Connolly**, University of Washington, USA.
@@ -84,7 +84,7 @@ u, & |u| \ll 1 \quad \text{(linear: noise preserved)}, \\
 \end{cases}
 $$
 
-It keeps the faint wings and noise structure linear, which is where faint KBOs sit. It compresses bright sources logarithmically without hard clipping, and unlike $\log x$ it handles negative values from background subtraction. The result is bounded, well-behaved inputs for gradient-based optimisation.
+It keeps the faint wings and noise structure linear, which is where faint KBOs sit. It compresses bright sources logarithmically without hard clipping, and unlike $\log (x)$ it handles negative values from background subtraction. The result is bounded, well-behaved inputs for gradient-based optimisation.
 
 ![](assets/figs/normalization.png)
 
