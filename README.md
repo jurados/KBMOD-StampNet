@@ -119,8 +119,8 @@ $$g = s^m \circ r^k, \qquad k \in \\{0, 1, 2, 3\\}, \quad m \in \\{0, 1\\}$$
 
 so the augmentation only needs to draw the two exponents:
 
-1. **Rotation:** draw $k \sim \mathcal{U}\{0,1,2,3\}$ and rotate by $k \times 90^\circ$ (`torch.rot90`), which applies $r^k$.
-2. **Reflection:** draw $m \sim \mathcal{U}\{0,1\}$. If $m = 1$, apply a horizontal flip (`TF.hflip`), which applies $s$.
+1. **Rotation:** draw $k \sim \mathcal{U}\\{0,1,2,3\\}$ and rotate by $k \times 90^\circ$ (`torch.rot90`), which applies $r^k$.
+2. **Reflection:** draw $m \sim \mathcal{U}\\{0,1}\\}$. If $m = 1$, apply a horizontal flip (`TF.hflip`), which applies $s$.
 
 Since $k$ and $m$ are independent and uniform, each of the $4 \times 2 = 8$ elements of $D_4$ is sampled with **equal probability** $1/8$. There is no need for a separate vertical flip or diagonal reflections: they are already the compositions $sr^2$, $sr$ and $sr^3$. Augmentation is active only during training (`self.training`) and is turned off for validation and test. Passing `fix_k` and `fix_m` applies a specific element $g = s^{m} r^{k}$, e.g. to visualise the 8 transformations of a stamp.
 
