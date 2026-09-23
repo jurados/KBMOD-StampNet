@@ -65,7 +65,7 @@ If the network sees these raw values, the few extreme pixels dominate the gradie
 
 1. **Raw data:** unscaled pixel intensities, shown between the 1st and 99th percentiles ($p_1$, $p_{99}$).
 
-2. **Robust SNR scaling (sigma clipping):** we estimate the background median $\tilde{\mu}_{\text{bg}}$ and dispersion $\sigma_{\text{bg}}$ with iterative $3\sigma$ clipping (`astropy.stats.sigma_clipped_stats`). This puts every pixel in units of signal-to-noise ratio:
+2. **Robust SNR scaling (sigma clipping):** we estimate the background median $\tilde{\mu}\_{\text{bg}}$ and dispersion $\sigma\_{\text{bg}}$ with iterative $3\sigma$ clipping (`astropy.stats.sigma_clipped_stats`). This puts every pixel in units of signal-to-noise ratio:
 
 $$x_{\text{SNR}} = \frac{x - \tilde{\mu}\_{\text{bg}}}{\sigma\_{\text{bg}}}$$
 
@@ -73,14 +73,14 @@ After this step the sky background is centred at zero with unit variance ($\sigm
 
 3. **SNR + `arcsinh` compression (adopted):** we apply the inverse hyperbolic sine stretch of Lupton et al. (1999), with softening parameter $\beta$:
 
-$$x_{\text{norm}} = \operatorname{arcsinh}\left(\frac{x_{\text{SNR}}}{\beta}\right), \qquad \beta = 5$$
+$$x_{\text{norm}} = \text{arcsinh}\left(\frac{x_{\text{SNR}}}{\beta}\right), \qquad \beta = 5$$
 
 The transform behaves differently in two regimes:
 
 $$\text{arcsinh}(u) \approx \begin{cases} u, & |u| \ll 1 \quad \text{(linear: noise preserved)} \\ \text{sign}(u)\,\ln(2|u|), & |u| \gg 1 \quad \text{(logarithmic: bright flux compressed)} \end{cases}$$
 
 It keeps the faint wings and noise structure linear, which is where faint KBOs sit. It compresses bright sources logarithmically without hard clipping, and unlike $\log x$ it handles negative values from background subtraction. The result is bounded, well-behaved inputs for gradient-based optimisation.
-s
+
 ![](assets/figs/normalization.png)
 
 ![](assets/figs/true_stamps_norm.png)
