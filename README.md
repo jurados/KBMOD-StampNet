@@ -6,8 +6,8 @@ _Classifying asteroids below the detection limit of a single image: filtering KB
 
 **Authors:**
 
-- [(@jurados)](https://github.com/jurados) **Steve Jurado** (_Main Contributor_), Universidad de Chile, Chile.
-- [(@Renato-98)](https://github.com/Renato-98) **Renato Pino**, Universidad de Chile, Chile.
+- (@jurados) **Steve Jurado** (_Main Contributor_), Universidad de Chile, Chile.
+- (@Renato-98) **Renato Pino**, Universidad de Chile, Chile.
 - **Korinna Bayer**
 
 **Advisor:** Prof. **Andrew Connolly**, University of Washington, USA.
@@ -33,10 +33,9 @@ The drawback is that real objects are **rare**, and the searches are contaminate
 
 Identify the rare asteroids among the false positives using **a single coadded image** of a faint asteroid. We train and compare several CNNs that classify KBMOD coadded stamps (postage-stamp cutouts centred on each candidate trajectory) as **true positives** (real moving sources) or **false positives**. The long-term goal is to go from a single image to stacks of images where the asteroids are very faint.
 
-<center>
-<!-- TODO: add figure with example true / false positive stamps -->
-<img src="figures/stamps_examples.png" height="300px" />
-</center>
+![](assets/figs/true_stamps.png)
+
+![](assets/figs/false_stamps.png)
 
 ## Dataset
 
@@ -68,29 +67,25 @@ If the network sees these raw values, the few extreme pixels dominate the gradie
 
 2. **Robust SNR scaling (sigma clipping):** we estimate the background median $\tilde{\mu}_{\text{bg}}$ and dispersion $\sigma_{\text{bg}}$ with iterative $3\sigma$ clipping (`astropy.stats.sigma_clipped_stats`). This puts every pixel in units of signal-to-noise ratio:
 
-$$x\_{\text{SNR}} = \frac{x - \tilde{\mu}\_{\text{bg}}}{\sigma\_{\text{bg}}}$$
+$$x_{\text{SNR}} = \frac{x - \tilde{\mu}_{\text{bg}}}{\sigma_{\text{bg}}}$$
 
-After this step the sky background is centred at zero with unit variance ($\sigma \approx 1$). Clipping keeps bright sources from biasing the noise estimate. On the training set we find $\tilde{\mu}\_{\text{bg}} \approx 0.00$ and $\sigma\_{\text{bg}} \approx 6.69$.
+After this step the sky background is centred at zero with unit variance ($\sigma \approx 1$). Clipping keeps bright sources from biasing the noise estimate. On the training set we find $\tilde{\mu}_{\text{bg}} \approx 0.00$ and $\sigma_{\text{bg}} \approx 6.69$.
 
 3. **SNR + `arcsinh` compression (adopted):** we apply the inverse hyperbolic sine stretch of Lupton et al. (1999), with softening parameter $\beta$:
 
-$$x\_{\text{norm}} = \operatorname{arcsinh}\left(\frac{x\_{\text{SNR}}}{\beta}\right), \qquad \beta = 5$$
+$$x_{\text{norm}} = \operatorname{arcsinh}\left(\frac{x_{\text{SNR}}}{\beta}\right), \qquad \beta = 5$$
 
 The transform behaves differently in two regimes:
 
 $$\operatorname{arcsinh}(u) \approx \begin{cases} u, & |u| \ll 1 \quad \text{(linear: noise preserved)} \\ \operatorname{sign}(u)\,\ln(2|u|), & |u| \gg 1 \quad \text{(logarithmic: bright flux compressed)} \end{cases}$$
 
 It keeps the faint wings and noise structure linear, which is where faint KBOs sit. It compresses bright sources logarithmically without hard clipping, and unlike $\log x$ it handles negative values from background subtraction. The result is bounded, well-behaved inputs for gradient-based optimisation.
+s
+![](assets/figs/normalization.png)
 
-<center>
-<!-- TODO: add pixel-intensity histograms (Raw | SNR | SNR + arcsinh) -->
-<img src="figures/normalization_histograms.png" height="300px" />
-</center>
+![](assets/figs/true_stamp_norm.png)
 
-<center>
-<!-- TODO: add example stamps after normalization -->
-<img src="figures/stamps_normalized.png" height="300px" />
-</center>
+![](assets/figs/false_stamp_norm.png)
 
 ### 2. Data augmentation: the dihedral group $D_4$
 
