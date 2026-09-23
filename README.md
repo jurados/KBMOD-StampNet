@@ -83,9 +83,9 @@ It keeps the faint wings and noise structure linear, which is where faint KBOs s
 s
 ![](assets/figs/normalization.png)
 
-![](assets/figs/true_stamp_norm.png)
+![](assets/figs/true_stamps_norm.png)
 
-![](assets/figs/false_stamp_norm.png)
+![](assets/figs/false_stamps_norm.png)
 
 ### 2. Data augmentation: the dihedral group $D_4$
 
@@ -114,10 +114,7 @@ These operations only permute pixels of the $21\times21$ grid. There is no inter
 
 A horizontal flip followed by a vertical flip equals $r^2$, and $k$ is uniform. So this procedure samples **all 8 elements of $D_4$ with equal probability** $1/8$. Augmentation is active only during training (`self.training`) and is turned off for validation and test.
 
-<center>
-<!-- TODO: add figure showing one stamp under the 8 D4 transformations -->
-<img src="figures/d4_augmentation.png" height="300px" />
-</center>
+![](assets/figs/dihedral_group.png)
 
 ### 3. Models
 
@@ -161,11 +158,11 @@ To adapt it to our data:
 - The first convolution is replaced so that it accepts **1 input channel** instead of 3 (RGB).
 - The final fully connected layer is replaced by a new 2-class head.
 
-| Model     | Strategy                                     | Depth | Block type           |
-| --------- | -------------------------------------------- | ----: | -------------------- |
-| Basic CNN | From scratch                                 |     2 | Conv + FC            |
-| ResNet-56 | From scratch                                 |    56 | Basic residual block |
-| ResNet-50 | Transfer learning (frozen ImageNet backbone) |    50 | Bottleneck           |
+| Model     | Strategy                                     | Depth | Block type           | Total Params | Train Params |
+| --------- | -------------------------------------------- | ----: | -------------------- | :----------: | :----------: |
+| Basic CNN | From scratch                                 |     2 | Conv + FC            |    41762     |    41762     |
+| ResNet-56 | From scratch                                 |    56 | Basic residual block |    857090    |    857090    |
+| ResNet-50 | Transfer learning (frozen ImageNet backbone) |    50 | Bottleneck           |   23505858   |     7234     |
 
 ## Results
 
