@@ -27,6 +27,24 @@ $$\nu = \frac{\sum_i \Psi_i}{\sqrt{\sum_i \Phi_i}},$$
 
 and trajectories with $\nu$ above some threshold $m$ are kept as $m$-sigma detections (Whidden et al., 2019). For each candidate, KBMOD coadds the pixels along the trajectory, so a real object's signal adds up coherently while the noise averages down.
 
+### Why digital tracking matters
+
+The figure below, from Smotherman (2022, Fig. 4.6), shows how much deeper digital tracking can go. Synthetic objects (_fakes_) were injected into the DEEP B1 quadrant, all observed in a **single broad filter** ($VR$). The plot shows the fraction recovered by KBMOD as a function of their magnitude $m_{VR}$. Only fakes moving at $150 < v < 400$ px/day are included.
+
+<p align="center">
+  <img src="assets/figs/main.png" width="55%" />
+</p>
+
+- **Orange points:** the fraction of fakes recovered in each magnitude bin, with $1/\sqrt{N}$ Poisson error bars.
+- **Thick blue line:** the best fit to all the data. Bright objects are recovered with a maximum efficiency of $c \approx 0.78$ (78%). Efficiency falls to 25% of that maximum at $m_{25} = 26.22$.
+- **Green dotted line:** the depth a **single exposure** would reach. Stacking $N$ images increases the signal-to-noise by $\sqrt{N}$, so with the mean $N \approx 87$ images per long stare:
+
+$$m_{25,\text{single}} = m_{25} - \tfrac{5}{2}\log_{10}\sqrt{N} \approx 23.8$$
+
+- **Thin lines:** the same fits for each individual long stare. The spread reflects the different number of images and image quality ($t_{\text{eff}}$) of each field and night. Fields with a larger total $\sum t_{\text{eff}}$ reach fainter magnitudes, approximately as $m_{25} \approx 23.91 + 1.25 \log_{10} \sum t_{\text{eff}}$.
+
+Digital tracking therefore gains about **2.4 magnitudes** over a single image: it detects objects about 9 times fainter. Between $m_{VR} \approx 23.8$ and $26.2$ lie the objects that **cannot be seen in any individual exposure** and only appear in the coadd. These are exactly the candidates that this project aims to classify.
+
 The drawback is that real objects are **rare**, and the searches are contaminated by many **false positives**: ghosts, glints, artifacts, bad subtraction residuals and noise fluctuations that happen to line up. Vetting the candidates by eye does not scale, so we need an automatic filter.
 
 ## Objective
