@@ -99,20 +99,25 @@ where $r$ is a $90^\circ$ rotation about the stamp centre and $s$ is a reflectio
 
 | Element         | Transformation                                    |
 | --------------- | ------------------------------------------------- |
-| $e$             | Identity                                          |
+| $1$             | Identity                                          |
 | $r,\ r^2,\ r^3$ | Rotations by $90^\circ$, $180^\circ$, $270^\circ$ |
 | $s,\ sr^2$      | Horizontal and vertical reflections               |
 | $sr,\ sr^3$     | Reflections across the two diagonals              |
 
 These operations only permute pixels of the $21\times21$ grid. There is no interpolation, so the noise statistics and the PSF are left exactly as they were. This is an advantage over arbitrary-angle rotations.
 
-**Why on the fly?** Our first approach precomputed all 8 transformations of every stamp. That multiplies the dataset by 8, to 1,916,320 coadd images, and even a subset of $n = 1000$ training stamps took about 40 minutes to train. So instead we apply the transformations **on the fly on the GPU** (`GPUDataAugmentation` module), following Dieleman et al. (2015):
+**Why on the fly?** Our first approach precomputed all 8 transformations of every stamp. That multiplies the dataset by 8, to 1,916,320 coadd images, and even a subset of $n = 1000$ training stamps took about 40 minutes to train. So instead we apply the transformations **on the fly on the GPU** (`GPUDataAugmentation` module), following Dieleman et al. (2015).
 
-1. Draw $k \sim \mathcal{U}\{0,1,2,3\}$ and rotate by $k \times 90^\circ$ (`torch.rot90`).
-2. Apply a horizontal flip with probability $p = 0.5$.
-3. Apply a vertical flip with probability $p = 0.5$.
+Every element of $D_4$ can be written uniquely as
 
-A horizontal flip followed by a vertical flip equals $r^2$, and $k$ is uniform. So this procedure samples **all 8 elements of $D_4$ with equal probability** $1/8$. Augmentation is active only during training (`self.training`) and is turned off for validation and test.
+$$g = s^m \circ r^k, \qquad k \in \{0, 1, 2, 3\},\ m \in \{0, 1\},$$
+
+so the augmentation only needs to draw the two exponents:
+
+1. **Rotation:** draw $k \sim \mathcal{U}\{0,1,2,3\}$ and rotate by $k \times 90^\circ$ (`torch.rot90`), which applies $r^k$.
+2. **Reflection:** draw $m \sim \mathcal{U}\{0,1\}$. If $m = 1$, apply a horizontal flip (`TF.hflip`), which applies $s$.
+
+Since $k$ and $m$ are independent and uniform, each of the $4 \times 2 = 8$ elements of $D_4$ is sampled with **equal probability** $1/8$. There is no need for a separate vertical flip or diagonal reflections: they are already the compositions $sr^2$, $sr$ and $sr^3$. Augmentation is active only during training (`self.training`) and is turned off for validation and test. Passing `fix_k` and `fix_m` applies a specific element $g = s^{m} r^{k}$, e.g. to visualise the 8 transformations of a stamp.
 
 ![](assets/figs/dihedral_group.png)
 
