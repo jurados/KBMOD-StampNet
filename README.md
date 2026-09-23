@@ -82,7 +82,7 @@ $$
 u, & |u| \ll 1 \quad \text{(linear: noise preserved)}, \\ 
 \text{sgn}(u) \ln(2|u|), & |u| \gg 1 \quad \text{(logarithmic: bright flux compressed)}.
 \end{cases}
-}$$
+$$
 
 It keeps the faint wings and noise structure linear, which is where faint KBOs sit. It compresses bright sources logarithmically without hard clipping, and unlike $\log x$ it handles negative values from background subtraction. The result is bounded, well-behaved inputs for gradient-based optimisation.
 
