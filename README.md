@@ -6,8 +6,8 @@ _Classifying asteroids below the detection limit of a single image: filtering KB
 
 **Authors:**
 
-- (@jurados) **Steve Jurado** (_Main Contributor_), Universidad de Chile, Chile.
-- (@Renato-98) **Renato Pino**, Universidad de Chile, Chile.
+- ((@jurados))[https://github.com/jurados] **Steve Jurado** (_Main Contributor_), Universidad de Chile, Chile.
+- ((@Renato-98))[https://github.com/Renato-98] **Renato Pino**, Universidad de Chile, Chile.
 - **Korinna Bayer**
 
 **Advisor:** Prof. **Andrew Connolly**, University of Washington, USA.
@@ -68,13 +68,13 @@ If the network sees these raw values, the few extreme pixels dominate the gradie
 
 2. **Robust SNR scaling (sigma clipping):** we estimate the background median $\tilde{\mu}_{\text{bg}}$ and dispersion $\sigma_{\text{bg}}$ with iterative $3\sigma$ clipping (`astropy.stats.sigma_clipped_stats`). This puts every pixel in units of signal-to-noise ratio:
 
-$$x_{\text{SNR}} = \frac{x - \tilde{\mu}_{\text{bg}}}{\sigma_{\text{bg}}}$$
+$$x\_{\text{SNR}} = \frac{x - \tilde{\mu}\_{\text{bg}}}{\sigma\_{\text{bg}}}$$
 
-After this step the sky background is centred at zero with unit variance ($\sigma \approx 1$). Clipping keeps bright sources from biasing the noise estimate. On the training set we find $\tilde{\mu}_{\text{bg}} \approx 0.00$ and $\sigma_{\text{bg}} \approx 6.69$.
+After this step the sky background is centred at zero with unit variance ($\sigma \approx 1$). Clipping keeps bright sources from biasing the noise estimate. On the training set we find $\tilde{\mu}\_{\text{bg}} \approx 0.00$ and $\sigma\_{\text{bg}} \approx 6.69$.
 
 3. **SNR + `arcsinh` compression (adopted):** we apply the inverse hyperbolic sine stretch of Lupton et al. (1999), with softening parameter $\beta$:
 
-$$x_{\text{norm}} = \operatorname{arcsinh}\left(\frac{x_{\text{SNR}}}{\beta}\right), \qquad \beta = 5$$
+$$x\_{\text{norm}} = \operatorname{arcsinh}\left(\frac{x\_{\text{SNR}}}{\beta}\right), \qquad \beta = 5$$
 
 The transform behaves differently in two regimes:
 
