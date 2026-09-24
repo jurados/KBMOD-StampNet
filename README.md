@@ -23,7 +23,7 @@ The search is based on maximum-likelihood detection. We assume the signal of mos
 
 The detection significance is then
 
-$$\nu = \frac{\sum_i \Psi_i}{\sqrt{\sum_i \Phi_i}},$$
+$$\nu = \frac{\sum_i \Psi_i}{\sqrt{\sum_i \Phi_i}}$$
 
 and trajectories with $\nu$ above some threshold $m$ are kept as $m$-sigma detections (Whidden et al., 2019). For each candidate, KBMOD coadds the pixels along the trajectory, so a real object's signal adds up coherently while the noise averages down.
 
